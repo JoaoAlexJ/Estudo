@@ -1,5 +1,6 @@
 package projeto.entidades;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Produto {
@@ -63,5 +64,20 @@ public class Produto {
 
     public int getEstoque() {
         return estoque;
+    }
+
+    //---------------------//
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Produto produto = (Produto) o;
+        return Objects.equals(descricao, produto.descricao);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(descricao);
     }
 }
