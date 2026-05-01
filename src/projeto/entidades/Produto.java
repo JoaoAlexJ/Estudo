@@ -85,11 +85,11 @@ public class Produto {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Produto produto = (Produto) o;
-        return Objects.equals(descricao, produto.descricao);
+        return Objects.equals(id, produto.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(descricao);
+        return Objects.hashCode(id);
     }
 }
