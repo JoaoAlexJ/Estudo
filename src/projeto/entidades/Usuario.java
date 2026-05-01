@@ -37,6 +37,34 @@ public class Usuario {
     //------------------//
 
 
+    public void setNome(String nome) {
+        if (nome == null || nome.isBlank()){
+            throw new NegocioException("Nome inválido");
+        }
+
+        this.nome = nome;
+    }
+
+    public void setEmail(String email) {
+        if (email == null || email.isBlank()){
+            throw new NegocioException("E-mail inválido");
+        }
+
+        this.email = email;
+    }
+
+    public void setSenha(String senha) {
+
+        if (senha == null || senha.isBlank()){
+            throw new NegocioException("Senha inválido");
+        }
+        if (senha.equals(this.senha)){
+            throw new NegocioException("A senha precisa ser diferente da atual");
+        }
+
+        this.senha = senha;
+    }
+
     public void setId(UUID id) {
 
         if (this.id != null){
