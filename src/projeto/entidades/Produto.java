@@ -84,7 +84,14 @@ public class Produto {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Produto)) return false;
+
         Produto produto = (Produto) o;
+
+        if (id == null || produto.id == null) {
+            return false;
+        }
+
         return Objects.equals(id, produto.id);
     }
 
