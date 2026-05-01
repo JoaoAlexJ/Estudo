@@ -1,9 +1,7 @@
 package projeto.services;
 
-import com.sun.jdi.request.StepRequest;
-import projeto.Criptografia.SenhaUtil;
+import projeto.utils.SenhaUtil;
 import projeto.entidades.Cargo;
-import projeto.entidades.Produto;
 import projeto.entidades.Usuario;
 import projeto.exception.NegocioException;
 import projeto.repositorios.UsuarioRepository;
