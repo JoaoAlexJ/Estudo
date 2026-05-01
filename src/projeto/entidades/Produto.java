@@ -37,14 +37,26 @@ public class Produto {
     //---------------------------//
 
     public void setDescricao(String descricao) {
+        if (descricao == null || descricao.isBlank()){
+            throw new RuntimeException("Descricao inválida");
+        }
+
         this.descricao = descricao;
     }
 
     public void setPreco(double preco) {
+        if (preco < 0){
+            throw new RuntimeException("Preço inválido");
+        }
+
         this.preco = preco;
     }
 
     public void setEstoque(int estoque) {
+        if (estoque < 0){
+            throw new RuntimeException("Estoque inválido");
+        }
+
         this.estoque = estoque;
     }
 
