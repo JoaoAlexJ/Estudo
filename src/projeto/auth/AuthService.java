@@ -12,6 +12,10 @@ public class AuthService {
     private UsuarioService usuarioService;
 
     public AuthService(UsuarioService usuarioService) {
+        if (usuarioService == null){
+            throw new NegocioException("Usuario service inválido");
+        }
+
         this.usuarioService = usuarioService;
     }
 

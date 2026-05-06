@@ -9,7 +9,7 @@ public class Sessao {
 
     public static void logar(Usuario user){
         if (user == null || user.getId() == null){
-            throw new NegocioException("usuar");
+            throw new NegocioException("usuario inválido");
         }
 
         userLogado = user;
