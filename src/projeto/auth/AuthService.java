@@ -32,5 +32,15 @@ public class AuthService {
         }
     }
 
+    public void logout(){
+        if (!Sessao.isLogado()) throw new NegocioException("nenhum Usuario está logado");
+
+        Sessao.logout();
+    }
+
+    public boolean validarPermissao(){
+        return Sessao.getUserLogado().getCargo().podeGerir();
+    }
+
 
 }
