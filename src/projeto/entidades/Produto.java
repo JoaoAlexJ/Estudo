@@ -1,5 +1,7 @@
 package projeto.entidades;
 
+import projeto.exception.NegocioException;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -40,11 +42,14 @@ public class Produto {
         if (descricao == null || descricao.isBlank()){
             throw new RuntimeException("Descricao inválida");
         }
+        if (descricao.equals(this.descricao))throw new NegocioException("A nova descrição precisa ser diferente da atual");
 
         this.descricao = descricao;
     }
 
     public void setPreco(double preco) {
+        if (preco == this.preco)throw new NegocioException("O novo preço precisa ser diferente do atual");
+
         if (preco < 0){
             throw new RuntimeException("Preço inválido");
         }
@@ -53,6 +58,8 @@ public class Produto {
     }
 
     public void setEstoque(int estoque) {
+        if (estoque == this.estoque)throw new NegocioException("O novo estoque precisa ser diferente do atual");
+
         if (estoque < 0){
             throw new RuntimeException("Estoque inválido");
         }

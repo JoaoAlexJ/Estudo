@@ -59,7 +59,7 @@ public class Usuario {
             throw new NegocioException("Senha inválido");
         }
         if (senha.equals(this.senha)){
-            throw new NegocioException("A senha precisa ser diferente da atual");
+            throw new NegocioException("A nova senha precisa ser diferente da atual");
         }
 
         this.senha = senha;
