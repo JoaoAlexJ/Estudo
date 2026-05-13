@@ -18,8 +18,7 @@ public class AuthService {
 
         this.usuarioService = usuarioService;
     }
-
-    public void logar(String email, String senha){
+    public void login(String email, String senha){
         Usuario user = usuarioService.listar().stream()
                 .filter(u -> u.getEmail().equals(email))
                 .findFirst()
