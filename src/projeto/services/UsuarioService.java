@@ -62,9 +62,8 @@ public class UsuarioService {
 
         buscarPorId(id).setEmail(email);
     }
-    public void alterSenha(UUID id, String novaSenha){
-        String novaSenhaCripto = SenhaUtil.criptografar(novaSenha);
+    public void alterSenha(UUID id, String senhaNova){
 
-        buscarPorId(id).setSenha(novaSenhaCripto);
+        buscarPorId(id).setSenha(senhaNova);
     }
 }

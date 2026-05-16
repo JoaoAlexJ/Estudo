@@ -38,7 +38,7 @@ public class AuthService {
     }
 
     public boolean validarPermissao(){
-        return Sessao.getUserLogado().getCargo().podeGerir();
+        return Sessao.getUserLogado().getCargo().isAdmin();
     }
 
 

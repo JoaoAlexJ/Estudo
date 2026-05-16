@@ -1,6 +1,7 @@
 package projeto.entidades;
 
 import projeto.exception.NegocioException;
+import projeto.utils.SenhaUtil;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -62,7 +63,7 @@ public class Usuario {
             throw new NegocioException("A nova senha precisa ser diferente da atual");
         }
 
-        this.senha = senha;
+        this.senha = SenhaUtil.criptografar(senha);
     }
 
     public void setId(UUID id) {

@@ -4,16 +4,16 @@ public enum Cargo {
 
     ADM{
         @Override
-        public boolean podeGerir() {
+        public boolean isAdmin() {
             return true;
         }
     },
     COMUM{
         @Override
-        public boolean podeGerir() {
+        public boolean isAdmin() {
             return false;
         }
     };
 
-    public abstract boolean podeGerir();
+    public abstract boolean isAdmin();
 }

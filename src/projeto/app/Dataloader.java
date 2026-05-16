@@ -40,11 +40,6 @@ public class Dataloader {
         usuarioService.cadastrar(u3.getNome(), u3.getEmail(), u3.getSenha(), u3.getCargo());
         usuarioService.cadastrar(u4.getNome(), u4.getEmail(), u4.getSenha(), u4.getCargo());
 
-        for (Usuario u : usuarioService.listar()){
-            if (u.getNome().equals(u1.getNome())){
-                Sessao.logar(u);
-            }
-        }
 
     }
 

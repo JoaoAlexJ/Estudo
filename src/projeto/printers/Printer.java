@@ -5,15 +5,13 @@ import projeto.entidades.Usuario;
 
 public class Printer {
 
-    public void printoProduto(Produto p){
+    public void printProduto(Produto p){
 
         System.out.println("=========================");
         System.out.println("ID: "+p.getId());
         System.out.println("Descrição: "+p.getDescricao());
-        System.out.println("Preço: "+p.getPreco());
+        System.out.printf("Preço: R$ %.2f\n", p.getPreco());
         System.out.println("Estoque: "+p.getEstoque());
-        System.out.println("-------------------------");
-
 
     }
 
@@ -24,8 +22,6 @@ public class Printer {
         System.out.println("Cargo:" +u.getCargo());
         System.out.println("Nome: "+u.getNome());
         System.out.println("Email: "+u.getEmail());
-        System.out.println("Senha: "+u.getSenha());
-        System.out.println("-------------------------");
 
 
     }
