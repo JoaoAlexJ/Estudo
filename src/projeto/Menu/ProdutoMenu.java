@@ -1,6 +1,8 @@
-package projeto.app.Menu;
+package projeto.Menu;
 
+import projeto.auth.AuthService;
 import projeto.auth.Sessao;
+import projeto.entidades.Cargo;
 import projeto.entidades.Produto;
 import projeto.exception.NegocioException;
 import projeto.printers.Printer;
@@ -11,32 +13,47 @@ import java.util.UUID;
 
 public class ProdutoMenu {
 
-    private MenuRapido menuRapido;
     private ProdutoService produtoService;
+    private AuthService authService;
     private Printer printer;
     private Scanner scanner;
 
-    public ProdutoMenu(MenuRapido menuRapido, ProdutoService produtoService, Scanner scanner, Printer printer) {
+    public ProdutoMenu(ProdutoService produtoService, AuthService authService, Scanner scanner, Printer printer) {
         if (produtoService == null)throw new NegocioException("Produto Service inválido");
-        if (menuRapido == null)throw new NegocioException("Menu rapido inválido");
+        if (authService == null)throw new NegocioException("Auth service inválido");
         if (scanner == null)throw new NegocioException("Scanner inválido");
         if (printer == null)throw new NegocioException("Printer inválido");
 
-        this.menuRapido = menuRapido;
+
         this.produtoService = produtoService;
+        this.authService = authService;
         this.scanner = scanner;
         this.printer = printer;
     }
 
     public MenuAcao iniciar(){
 
-            menuRapido.mostrarMenuProduto(Sessao.getUserLogado().getCargo());
-            int choice = scanner.nextInt();
+        System.out.println("1 - Buscar produto");
+        System.out.println("2 - Listar produtos");
 
+        if (Sessao.getUserLogado().getCargo() == Cargo.ADM){
+
+            System.out.println("3 - Cadastrar produto");
+            System.out.println("4 - Deletar produto");
+            System.out.println("-----------------");
+            System.out.println("5 - Alterar descrição");
+            System.out.println("6 - Alterar preço");
+            System.out.println("7 - Alterar estoque");
+        }
+
+            System.out.println("0 - sair");
+            System.out.print("-> ");
+
+            int choice = scanner.nextInt();
             System.out.println("---------------------------");
 
 
-        scanner.nextLine();
+            scanner.nextLine();
 
             switch (choice){
                 
@@ -59,7 +76,7 @@ public class ProdutoMenu {
 
                 case 3:
 
-                    if (!Sessao.getUserLogado().getCargo().isAdmin()){
+                    if (!authService.validarPermissao()){
                         System.out.println("Opção inválida");
                         return MenuAcao.CONTINUAR;
                     }else {
@@ -68,20 +85,21 @@ public class ProdutoMenu {
                         String descricao = scanner.nextLine();
 
                         System.out.println("Informe o preço do produto");
-                        double preco = scanner.nextInt();
+                        double preco = scanner.nextDouble();
 
                         System.out.println("Informe o estoque do produto: ");
                         int estoque = scanner.nextInt();
 
                         produtoService.cadastrar(descricao, preco, estoque);
                         System.out.println("Produto cadastrado com sucesso!");
-                        System.out.println("-------------------------------");
+                        System.out.println("---------------------------");
+
                         return MenuAcao.CONTINUAR;
                     }
 
                 case 4:
 
-                    if (!Sessao.getUserLogado().getCargo().isAdmin()) {
+                    if (!authService.validarPermissao()) {
                         System.out.println("Opção inválida");
                         return MenuAcao.CONTINUAR;
                     }else {
@@ -90,13 +108,14 @@ public class ProdutoMenu {
 
                         produtoService.delete(UUID.fromString(idDel));
                         System.out.println("Produto deletado com sucesso!");
-                        System.out.println("-------------------------------");
+                        System.out.println("---------------------------");
+
                         return MenuAcao.CONTINUAR;
                     }
 
                 case 5:
 
-                    if (!Sessao.getUserLogado().getCargo().isAdmin()) {
+                    if (!authService.validarPermissao()) {
                         System.out.println("Opção inválida");
                         return MenuAcao.CONTINUAR;
                     }else {
@@ -108,15 +127,16 @@ public class ProdutoMenu {
 
                         produtoService.alterarDescricao(UUID.fromString(idAlterDesc), descricao);
                         System.out.println("Informação alterada com sucesso!");
-                        System.out.println("-------------------------------");
 
                         printer.printProduto(produtoService.buscar(UUID.fromString(idAlterDesc)));
+                        System.out.println("---------------------------");
                         return MenuAcao.CONTINUAR;
 
                     }
 
                 case 6:
-                    if (!Sessao.getUserLogado().getCargo().isAdmin()) {
+
+                    if (!authService.validarPermissao()) {
                         System.out.println("Opção inválida");
                         return MenuAcao.CONTINUAR;
                     }else {
@@ -129,16 +149,17 @@ public class ProdutoMenu {
 
                         produtoService.alterarPreco(UUID.fromString(idAlterPreco), preco);
                         System.out.println("Informação alterada com sucesso!");
-                        System.out.println("-------------------------------");
 
                         printer.printProduto(produtoService.buscar(UUID.fromString(idAlterPreco)));
+                        System.out.println("---------------------------");
+
                         return MenuAcao.CONTINUAR;
 
                     }
 
                 case 7:
 
-                    if (!Sessao.getUserLogado().getCargo().isAdmin()) {
+                    if (!authService.validarPermissao()) {
                         System.out.println("Opção inválida");
                         return MenuAcao.CONTINUAR;
                     }else {
@@ -151,9 +172,10 @@ public class ProdutoMenu {
 
                         produtoService.alterarEstoque(UUID.fromString(idAlterEstoque), estoque);
                         System.out.println("Informação alterada com sucesso!");
-                        System.out.println("-------------------------------");
 
                         printer.printProduto(produtoService.buscar(UUID.fromString(idAlterEstoque)));
+                        System.out.println("---------------------------");
+
                         return MenuAcao.CONTINUAR;
 
                     }

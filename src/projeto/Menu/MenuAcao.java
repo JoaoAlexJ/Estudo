@@ -1,4 +1,4 @@
-package projeto.app.Menu;
+package projeto.Menu;
 
 public enum MenuAcao {
 

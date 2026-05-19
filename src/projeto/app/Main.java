@@ -1,12 +1,11 @@
 package projeto.app;
 
-import projeto.app.Menu.MenuAcao;
-import projeto.app.Menu.MenuRapido;
-import projeto.app.Menu.ProdutoMenu;
-import projeto.app.Menu.UsuarioMenu;
+import projeto.Menu.FluxoMenus;
+import projeto.Menu.MenuAcao;
+import projeto.Menu.ProdutoMenu;
+import projeto.Menu.UsuarioMenu;
 import projeto.auth.AuthService;
 import projeto.auth.Sessao;
-import projeto.entidades.Cargo;
 import projeto.entidades.Mercado;
 import projeto.printers.Printer;
 import projeto.repositorios.ProdutoRepository;
@@ -21,23 +20,23 @@ public class Main {
     public static void main(String[] args) {
 
         //Teste
+        Printer printer = new Printer();
+        Scanner scanner = new Scanner(System.in);
 
         ProdutoRepository produtoRepository = new ProdutoRepository();
         UsuarioRepository usuarioRepository = new UsuarioRepository();
 
         ProdutoService produtoService = new ProdutoService(produtoRepository);
         UsuarioService usuarioService = new UsuarioService(usuarioRepository);
-        AuthService authService = new AuthService(usuarioService);
+        AuthService authService = new AuthService(usuarioService, scanner);
 
-        Printer printer = new Printer();
-        Scanner scanner = new Scanner(System.in);
-
-        MenuRapido menuRapido = new MenuRapido();
-        ProdutoMenu produtoMenu = new ProdutoMenu(menuRapido, produtoService,scanner, printer);
-        UsuarioMenu usuarioMenu = new UsuarioMenu(menuRapido, usuarioService, printer, scanner);
+        FluxoMenus fluxoMenus = new FluxoMenus(scanner, authService, usuarioService, produtoService);
+        ProdutoMenu produtoMenu = new ProdutoMenu(produtoService, authService, scanner, printer);
+        UsuarioMenu usuarioMenu = new UsuarioMenu(fluxoMenus, usuarioService, authService, printer, scanner);
 
         Dataloader dataloader = new Dataloader(produtoService, usuarioService);
-        Mercado mercado = new Mercado(produtoService, usuarioService, authService);
+        Mercado mercado = new Mercado(scanner, produtoService, usuarioService, authService);
+
 
         dataloader.iniciar();
 
@@ -47,6 +46,8 @@ public class Main {
 
 
             while (true) {
+
+                // menu inicial
 
                 System.out.println("1 - Fazer login");
                 System.out.println("2 - Cadastrar uma conta");
@@ -61,22 +62,20 @@ public class Main {
                 switch (choice) {
 
                     case 1:
-                        System.out.print("Informe o seu email: \n");
-                        String email = scanner.nextLine();
 
-                        System.out.print("Informe sua senha: \n");
-                        String senha = scanner.nextLine();
+                        // login
 
-                        mercado.login(email, senha);
-                        System.out.println("Login efetuado com sucesso!");
-                        System.out.println("---------------------------");
+                        fluxoMenus.loginFluxo();
 
                         if (!Sessao.getUserLogado().getCargo().isAdmin()) {
+
+                            // menu user comum
+
 
                             while (executandoMenu1) {
 
                                 System.out.println("1 - Produtos");
-                                System.out.println("2 - configurações da conta: ");
+                                System.out.println("2 - configurações da conta");
                                 System.out.println("0 - sair");
                                 System.out.print("-> ");
                                 int choiceMenu = scanner.nextInt();
@@ -88,12 +87,12 @@ public class Main {
                                 switch (choiceMenu) {
 
                                     case 1:
-                                        executarMenuProduto(produtoMenu);
+                                        fluxoMenus.executarMenuProduto(produtoMenu);
                                         System.out.println("---------------------------");
                                         break;
 
                                     case 2:
-                                        executarMenuUsuario(usuarioMenu);
+                                        fluxoMenus.executarMenuUsuario(usuarioMenu);
                                         System.out.println("---------------------------");
                                         break;
 
@@ -111,6 +110,8 @@ public class Main {
 
                         } else {
 
+                            // menu adm
+
                             while (executandoMenu1) {
 
                                 System.out.println("1 - Produtos");
@@ -118,16 +119,18 @@ public class Main {
                                 System.out.println("0 - sair");
                                 int choice1 = scanner.nextInt();
 
+                                System.out.println("---------------------------");
+
                                 scanner.nextLine();
 
                                 switch (choice1) {
 
                                     case 1:
-                                        executarMenuProduto(produtoMenu);
+                                        fluxoMenus.executarMenuProduto(produtoMenu);
                                         break;
 
                                     case 2:
-                                        executarMenuUsuario(usuarioMenu);
+                                        fluxoMenus.executarMenuUsuario(usuarioMenu);
                                         break;
 
                                     case 0:
@@ -149,38 +152,26 @@ public class Main {
 
                      break;
 
+                    case 2:
+                        fluxoMenus.cadastrarUsuario();
+                        break;
+
                     case 0:
                         System.out.println("Saindo...");
                         return;
+
+                    default:
+                        System.out.println("Opção inválida");
+                        break;
+
                 }
 
             }
 
-    }
-        public static void executarMenuProduto(ProdutoMenu produtoMenu){
-
-            while (true){
-
-                MenuAcao acao = produtoMenu.iniciar();
-
-                if (acao == MenuAcao.SAIR)break;
-
-            }
 
 
-        }
-
-    public static void executarMenuUsuario(UsuarioMenu usuarioMenu){
-
-        while (true){
-
-            MenuAcao acao = usuarioMenu.iniciar();
-
-            if (acao == MenuAcao.SAIR)break;
-
-        }
 
 
     }
 
-    }
+}

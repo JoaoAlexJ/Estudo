@@ -8,19 +8,22 @@ import projeto.services.ProdutoService;
 import projeto.services.UsuarioService;
 
 import java.util.List;
+import java.util.Scanner;
 import java.util.UUID;
 
 public class Mercado {
 
+    private Scanner scanner;
     private ProdutoService produtoService;
     private UsuarioService usuarioService;
     private AuthService authService;
 
-    public Mercado(ProdutoService produtoService, UsuarioService usuarioService, AuthService authService) {
+    public Mercado(Scanner scanner, ProdutoService produtoService, UsuarioService usuarioService, AuthService authService) {
         if (produtoService == null)throw new NegocioException("Produuto Service inválido");
         if (usuarioService == null)throw new NegocioException("Usuario Service inválido");
         if (authService == null)throw new NegocioException("Auth Service inválido");
 
+        this.scanner = scanner;
         this.produtoService = produtoService;
         this.usuarioService = usuarioService;
         this.authService = authService;

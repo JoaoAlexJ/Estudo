@@ -6,15 +6,14 @@ import projeto.services.UsuarioService;
 import projeto.utils.SenhaUtil;
 
 import java.util.Optional;
+import java.util.Scanner;
 
 public class AuthService {
 
     private UsuarioService usuarioService;
 
-    public AuthService(UsuarioService usuarioService) {
-        if (usuarioService == null){
-            throw new NegocioException("Usuario service inválido");
-        }
+    public AuthService(UsuarioService usuarioService, Scanner scanner) {
+        if (usuarioService == null)throw new NegocioException("Usuario service inválido");
 
         this.usuarioService = usuarioService;
     }
@@ -42,4 +41,5 @@ public class AuthService {
     }
 
 
+    //---------------------------------//
 }

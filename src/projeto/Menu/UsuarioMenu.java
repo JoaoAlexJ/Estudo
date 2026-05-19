@@ -1,5 +1,6 @@
-package projeto.app.Menu;
+package projeto.Menu;
 
+import projeto.auth.AuthService;
 import projeto.auth.Sessao;
 import projeto.entidades.Cargo;
 import projeto.entidades.Usuario;
@@ -12,27 +13,47 @@ import java.util.UUID;
 
 public class UsuarioMenu {
 
-    private MenuRapido menuRapido;
+    private FluxoMenus fluxoMenus;
     private UsuarioService usuarioService;
+    private AuthService authService;
     private Printer printer;
     private Scanner scanner;
 
-    public UsuarioMenu(MenuRapido menuRapido, UsuarioService usuarioService, Printer printer, Scanner scanner) {
-        if (menuRapido == null)throw new NegocioException("MenuRapido inválido");
+    public UsuarioMenu(FluxoMenus fluxoMenus, UsuarioService usuarioService, AuthService authService, Printer printer, Scanner scanner) {
+        if (fluxoMenus == null)throw new NegocioException("Fluxo menu inválido");
         if (usuarioService == null)throw new NegocioException("Usuario Service inválido");
+        if (authService == null)throw new NegocioException("Auth Service inválido");
         if (printer == null)throw new NegocioException("Printer inválido");
         if (scanner == null)throw new NegocioException("Scarnner inválido");
 
-        this.menuRapido = menuRapido;
+        this.fluxoMenus = fluxoMenus;
         this.usuarioService = usuarioService;
+        this.authService = authService;
         this.printer = printer;
         this.scanner = scanner;
     }
 
     public MenuAcao iniciar(){
 
-        menuRapido.mostrarMenuUsuario(Sessao.getUserLogado().getCargo());
+        if (Sessao.getUserLogado().getCargo() == Cargo.COMUM){
+            System.out.println("1 - alterar nome");
+            System.out.println("2 - alterar e-mail");
+            System.out.println("3 - alterar senha");
+            System.out.println("4 - vizualizar dados da conta");
+        }
+        else {
+
+            System.out.println("1 - Cadastrar usuário");
+            System.out.println("2 - Buscar usuário");
+            System.out.println("3 - listar usuários");
+            System.out.println("4 - Atualizar usuario");
+            System.out.println("5 - Deletar usuário");
+
+        }
+
+        System.out.println("0 - Sair");
         System.out.print("-> ");
+
         int choice = scanner.nextInt();
 
         scanner.nextLine();
@@ -41,7 +62,7 @@ public class UsuarioMenu {
 
             case 1:
 
-                if (!Sessao.getUserLogado().getCargo().isAdmin()){
+                if (!authService.validarPermissao()){
 
                     System.out.println("Informe o seu novo nome");
                     String nome = scanner.nextLine();
@@ -55,21 +76,7 @@ public class UsuarioMenu {
                     return MenuAcao.CONTINUAR;
                 } else {
 
-                    System.out.println("Informe o nome do novo usuário: ");
-                    String nomeCadastro = scanner.nextLine();
-
-                    System.out.println("Informe um e-mail válido: ");
-                    String emailCadastro = scanner.nextLine();
-
-                    System.out.println("Informe a senha do novo usuário: ");
-                    String senha = scanner.nextLine();
-
-
-                    usuarioService.cadastrar(nomeCadastro, emailCadastro, senha, Cargo.COMUM);
-                    System.out.println("Usuario cadastrado com sucesso!");
-                    System.out.println("--------------------");
-
-                    printer.printUsuario(Sessao.getUserLogado());
+                    fluxoMenus.cadastrarUsuario();
                     System.out.println("--------------------");
                     return MenuAcao.CONTINUAR;
 
@@ -77,7 +84,7 @@ public class UsuarioMenu {
 
             case 2:
 
-                if (!Sessao.getUserLogado().getCargo().isAdmin()){
+                if (!authService.validarPermissao()){
 
                     System.out.println("Informe o seu novo e-mail");
                     String email = scanner.nextLine();
@@ -105,7 +112,7 @@ public class UsuarioMenu {
 
             case 3:
 
-                if (!Sessao.getUserLogado().getCargo().isAdmin()){
+                if (!authService.validarPermissao()){
 
                     System.out.println("Informe a nova senha: ");
                     String senha = scanner.nextLine();
@@ -132,7 +139,7 @@ public class UsuarioMenu {
 
             case 4:
 
-                if (!Sessao.getUserLogado().getCargo().isAdmin()){
+                if (!authService.validarPermissao()){
 
                     printer.printUsuario(Sessao.getUserLogado());
                     System.out.println("---------------------------");
@@ -218,7 +225,7 @@ public class UsuarioMenu {
 
             case 5:
 
-                if (!Sessao.getUserLogado().getCargo().isAdmin()){
+                if (!authService.validarPermissao()){
                     System.out.println("Opção inválido");
                     return MenuAcao.CONTINUAR;
                 }else{
@@ -231,7 +238,6 @@ public class UsuarioMenu {
 
                     System.out.println("O seguinte usuario foi deletado: ");
                     printer.printUsuario(user);
-                    System.out.println("---------------------------------");
                     return MenuAcao.CONTINUAR;
 
 
@@ -239,10 +245,14 @@ public class UsuarioMenu {
 
             case 0:
                 System.out.println("Saindo...");
+                System.out.println("---------------------------");
+
                 return MenuAcao.SAIR;
 
             default:
                 System.out.println("Opção inválida");
+                System.out.println("---------------------------");
+
                 return MenuAcao.CONTINUAR;
 
         }
