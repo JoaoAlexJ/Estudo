@@ -1,13 +1,13 @@
 package projeto.app;
 
 import projeto.Menu.FluxoMenus;
-import projeto.Menu.MenuAcao;
 import projeto.Menu.ProdutoMenu;
 import projeto.Menu.UsuarioMenu;
 import projeto.auth.AuthService;
 import projeto.auth.Sessao;
-import projeto.entidades.Mercado;
+import projeto.entidades.entidadeDeDominio.Mercado;
 import projeto.printers.Printer;
+import projeto.repositorios.BancoRepository;
 import projeto.repositorios.ProdutoRepository;
 import projeto.repositorios.UsuarioRepository;
 import projeto.services.ProdutoService;
@@ -25,16 +25,17 @@ public class Main {
 
         ProdutoRepository produtoRepository = new ProdutoRepository();
         UsuarioRepository usuarioRepository = new UsuarioRepository();
+        BancoRepository bancoRepository = new BancoRepository();
 
         ProdutoService produtoService = new ProdutoService(produtoRepository);
         UsuarioService usuarioService = new UsuarioService(usuarioRepository);
         AuthService authService = new AuthService(usuarioService, scanner);
 
-        FluxoMenus fluxoMenus = new FluxoMenus(scanner, authService, usuarioService, produtoService);
+        FluxoMenus fluxoMenus = new FluxoMenus(scanner, authService, usuarioService, produtoService, bancoRepository);
         ProdutoMenu produtoMenu = new ProdutoMenu(produtoService, authService, scanner, printer);
         UsuarioMenu usuarioMenu = new UsuarioMenu(fluxoMenus, usuarioService, authService, printer, scanner);
 
-        Dataloader dataloader = new Dataloader(produtoService, usuarioService);
+        Dataloader dataloader = new Dataloader(produtoService, usuarioService, bancoRepository);
         Mercado mercado = new Mercado(scanner, produtoService, usuarioService, authService);
 
 

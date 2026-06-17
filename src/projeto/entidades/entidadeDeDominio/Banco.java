@@ -1,5 +1,6 @@
-package projeto.entidades;
+package projeto.entidades.entidadeDeDominio;
 
+import projeto.entidades.ContaBancaria;
 import projeto.exception.NegocioException;
 
 import java.util.HashMap;
@@ -37,6 +38,12 @@ public class Banco {
 
     }
 
+    public boolean login(String numeroConta, String senha){
+
+        if (findConta(numeroConta).getSenha().equals(senha))return true; else return false;
+
+
+    }
 
     public UUID getId() {
         return id;

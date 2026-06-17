@@ -1,9 +1,11 @@
-package projeto.entidades;
+package projeto.entidades.entidadeDeDominio;
 
 import projeto.auth.AuthService;
 import projeto.auth.Sessao;
+import projeto.entidades.Cargo;
+import projeto.entidades.Produto;
+import projeto.entidades.Usuario;
 import projeto.exception.NegocioException;
-import projeto.repositorios.ProdutoRepository;
 import projeto.services.ProdutoService;
 import projeto.services.UsuarioService;
 

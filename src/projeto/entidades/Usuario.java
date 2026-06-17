@@ -13,9 +13,9 @@ public class Usuario {
     private String email;
     private String senha;
     private Cargo cargo;
+    private ContaBancaria contaBancaria;
 
-
-    public Usuario(String nome, String email, String senha, Cargo cargo) {
+    public Usuario(String nome, String email, String senha, Cargo cargo, ContaBancaria contaBancaria) {
         if (nome == null || nome.isBlank()){
             throw new NegocioException("Nome inválido");
         }
@@ -28,11 +28,13 @@ public class Usuario {
         if (cargo == null){
             throw new NegocioException("Cargo inválido");
         }
+        if (contaBancaria == null)throw new NegocioException("Conta bancaria inválida");
 
         this.nome = nome;
         this.email = email;
         this.senha = senha;
         this.cargo = cargo;
+        this.contaBancaria = contaBancaria;
     }
 
     //------------------//
@@ -95,6 +97,10 @@ public class Usuario {
 
     public Cargo getCargo() {
         return cargo;
+    }
+
+    public ContaBancaria getContaBancaria() {
+        return contaBancaria;
     }
 
     @Override

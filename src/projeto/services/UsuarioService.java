@@ -1,5 +1,7 @@
 package projeto.services;
 
+import projeto.entidades.ContaBancaria;
+import projeto.entidades.entidadeDeDominio.Banco;
 import projeto.utils.SenhaUtil;
 import projeto.entidades.Cargo;
 import projeto.entidades.Usuario;
@@ -17,7 +19,7 @@ public class UsuarioService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    public void cadastrar(String nome, String email, String  senha, Cargo cargo){
+    public void cadastrar(String nome, String email, String  senha, Cargo cargo, ContaBancaria contaBancaria){
 
        usuarioRepository.listar().stream()
                .filter(u -> u.getEmail().equals(email))
@@ -30,7 +32,7 @@ public class UsuarioService {
 
         String senhaCriptografada = SenhaUtil.criptografar(senha);
 
-        Usuario user = new Usuario(nome, email, senhaCriptografada, cargo);
+        Usuario user = new Usuario(nome, email, senhaCriptografada, cargo, contaBancaria);
         usuarioRepository.salvar(user);
 
     }

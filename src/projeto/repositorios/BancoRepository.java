@@ -1,11 +1,10 @@
 package projeto.repositorios;
 
-import projeto.entidades.Banco;
+import projeto.entidades.entidadeDeDominio.Banco;
 import projeto.exception.NegocioException;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class BancoRepository {
 
