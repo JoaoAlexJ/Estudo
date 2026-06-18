@@ -32,23 +32,33 @@ public class Dataloader {
 
         //---------------------------//
 
-        Banco Santander = new Banco("Santander");
-        Banco Bradesco = new Banco("Bradesco");
-        Banco Itau = new Banco("Itaú");
+        Banco santander = new Banco("Santander");
+        Banco bradesco = new Banco("Bradesco");
+        Banco itau = new Banco("Itaú");
 
         //----------------------------//
 
-        ContaBancaria c1 = new ContaBancaria(Santander,"Joao", "741", "123456", 1000);
-        ContaBancaria c2 = new ContaBancaria(Bradesco,"Maria", "852", "123456", 1000);
-        ContaBancaria c3 = new ContaBancaria(Itau,"Roberto", "741", "123456", 1000);
+        ContaBancaria c1 = new ContaBancaria(santander,"Joao", "741", "123456", 1000);
+        ContaBancaria c2 = new ContaBancaria(bradesco,"Maria", "852", "123456", 1000);
+        ContaBancaria c3 = new ContaBancaria(itau,"Roberto", "741", "123456", 1000);
+
+        ContaBancaria cCadastro = new ContaBancaria(itau, "Paulo", "891", "123456", 1000 );
 
         //-----------------------------//
 
-        Usuario u1 = new Usuario("Joao", "joao@gmail.com", "123456", Cargo.ADM, c1);
+        Usuario u1 = new Usuario("Joao", "joao@gmail.com", "123456", Cargo.ADM, null);
         Usuario u2 = new Usuario("Maria", "maria@gmail.com", "123456", Cargo.COMUM, c2);
         Usuario u3 = new Usuario("Roberto", "roberto@gmail.com", "123456", Cargo.COMUM, c3);
 
         //-----------------------------//
+
+        santander.adicionarConta(c1);
+        bradesco.adicionarConta(c2);
+        itau.adicionarConta(cCadastro);
+        itau.adicionarConta(c3);
+
+        //-----------------------------//
+
 
 
         produtoService.cadastrar(p1.getDescricao(), p1.getPreco(), p1.getEstoque());
@@ -65,9 +75,9 @@ public class Dataloader {
 
         //-----------------------------//
 
-        bancoRepository.adicionarBanco(Bradesco);
-        bancoRepository.adicionarBanco(Santander);
-        bancoRepository.adicionarBanco(Itau);
+        bancoRepository.adicionarBanco(bradesco);
+        bancoRepository.adicionarBanco(santander);
+        bancoRepository.adicionarBanco(itau);
 
 
     }

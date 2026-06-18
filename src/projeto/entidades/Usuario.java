@@ -28,7 +28,9 @@ public class Usuario {
         if (cargo == null){
             throw new NegocioException("Cargo inválido");
         }
-        if (contaBancaria == null)throw new NegocioException("Conta bancaria inválida");
+
+        if (cargo == Cargo.COMUM && contaBancaria == null)
+            throw new NegocioException("você precisa cadastrar uma conta bancaria válida");
 
         this.nome = nome;
         this.email = email;
@@ -38,6 +40,10 @@ public class Usuario {
     }
 
     //------------------//
+
+    public boolean possuiContaBancaria(){
+        return contaBancaria != null;
+    }
 
 
     public void setNome(String nome) {

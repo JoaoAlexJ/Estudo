@@ -37,11 +37,8 @@ public class FluxoMenus {
 
     public void loginFluxo(){
 
-        System.out.print("Informe o seu email: \n");
-        String email = scanner.nextLine();
-
-        System.out.print("Informe sua senha: \n");
-        String senha = scanner.nextLine();
+        String email = solicitarEmail();
+        String senha = solicitarSenha();
 
         authService.login(email, senha);
         System.out.println("Login efetuado com sucesso!");
@@ -51,17 +48,65 @@ public class FluxoMenus {
 
     public void cadastrarUsuario(){
 
-        System.out.println("Informe um nome de usuario: ");
+        String nome = solicitarNome();
+        String email = solicitarEmail();
+        String senha = solicitarSenha();
+
+        Banco banco = solicitarBanco();
+        ContaBancaria contaBancaria = solicitarContaBancaria(banco);
+
+        loginBanco(banco, contaBancaria);
+
+        usuarioService.cadastrar(nome, email, senha, Cargo.COMUM, contaBancaria);
+        System.out.println("Usuario cadastrado com sucesso");
+        System.out.println("-----------------------------");
+
+    }
+
+    //----Metodos Auxiliares-----//
+
+    private String solicitarNome(){
+
+        System.out.println("Informe um nome válido");
+        System.out.print("-> ");
         String nome = scanner.nextLine();
 
-        System.out.println("Informe um e-mail válido: ");
+        if (nome == null || nome.isBlank()){
+            throw new NegocioException("Nome inválido");
+        }
+
+        return nome;
+    }
+
+    private String solicitarEmail(){
+
+        System.out.println("Informe um e-mail válido");
+        System.out.print("-> ");
         String email = scanner.nextLine();
 
-        System.out.println("Informe uma senha válida: ");
+        if (email == null || email.isBlank()){
+            throw new NegocioException("e-mail inválido");
+        }
+
+        return email;
+    }
+
+    private String solicitarSenha(){
+
+        System.out.println("Informe uma senha válida");
+        System.out.print("-> ");
         String senha = scanner.nextLine();
 
+        if (senha == null || senha.isBlank()){
+            throw new NegocioException("senha inválida");
+        }
 
-        //--------banco-------//
+        return senha;
+    }
+
+    //------------//
+
+    private Banco solicitarBanco(){
 
         Banco banco = null;
         boolean executeMenuBanco = true;
@@ -105,43 +150,43 @@ public class FluxoMenus {
             }
         }
 
-        //--------Conta Bancaria-------//
+        return banco;
+    }
 
-        ContaBancaria contaBancaria = null;
+    private ContaBancaria solicitarContaBancaria(Banco b){
 
+        System.out.println("Informe o numero da conta");
+        System.out.print("-> ");
+        String numeroConta = scanner.nextLine();
+
+        if (numeroConta == null || numeroConta.isBlank())
+            throw new NegocioException("Numero de conta inválido");
+
+        return b.findConta(numeroConta);
+
+    }
+
+    private void loginBanco(Banco b, ContaBancaria c){
         while (true) {
-
-            System.out.println("Informe o numero da sua conta");
-            System.out.print("-> ");
-            String numeroConta = scanner.nextLine();
-
-            contaBancaria = banco.findConta(numeroConta);
-
-            if (contaBancaria == null){
-                throw new NegocioException("Conta não encontrada");
-            }
 
             System.out.println("Informe sua senha: ");
             System.out.print("-> ");
-
             String senhaBanco = scanner.nextLine();
 
 
-            if (!banco.login(numeroConta, senhaBanco)) {
+            if (!b.login(c.getNumeroConta(), senhaBanco)) {
                 System.out.println("Senha ou numero da conta inválido");
                 continue;
             }
 
             System.out.println("Conta localizada!");
             System.out.println("----------------------------");
+
             break;
-
         }
-            usuarioService.cadastrar(nome, email, senha, Cargo.COMUM, contaBancaria);
-            System.out.println("Usuario cadastrado com sucesso");
-            System.out.println("-----------------------------");
-
     }
+
+    //--------------//
 
     public void executarMenuProduto(ProdutoMenu produtoMenu){
 

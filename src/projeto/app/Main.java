@@ -5,7 +5,6 @@ import projeto.Menu.ProdutoMenu;
 import projeto.Menu.UsuarioMenu;
 import projeto.auth.AuthService;
 import projeto.auth.Sessao;
-import projeto.entidades.entidadeDeDominio.Mercado;
 import projeto.printers.Printer;
 import projeto.repositorios.BancoRepository;
 import projeto.repositorios.ProdutoRepository;
@@ -36,7 +35,6 @@ public class Main {
         UsuarioMenu usuarioMenu = new UsuarioMenu(fluxoMenus, usuarioService, authService, printer, scanner);
 
         Dataloader dataloader = new Dataloader(produtoService, usuarioService, bancoRepository);
-        Mercado mercado = new Mercado(scanner, produtoService, usuarioService, authService);
 
 
         dataloader.iniciar();

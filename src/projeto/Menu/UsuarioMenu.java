@@ -121,8 +121,6 @@ public class UsuarioMenu {
                     System.out.println("Senha alterada com sucesso!");
                     System.out.println("--------------------");
 
-                    printer.printUsuario(Sessao.getUserLogado());
-                    System.out.println("--------------------");
                     return MenuAcao.CONTINUAR;
 
                 }
