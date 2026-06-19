@@ -5,6 +5,7 @@ import projeto.Menu.ProdutoMenu;
 import projeto.Menu.UsuarioMenu;
 import projeto.auth.AuthService;
 import projeto.auth.Sessao;
+import projeto.entidades.Categoria;
 import projeto.printers.Printer;
 import projeto.repositorios.BancoRepository;
 import projeto.repositorios.ProdutoRepository;
@@ -31,7 +32,7 @@ public class Main {
         AuthService authService = new AuthService(usuarioService, scanner);
 
         FluxoMenus fluxoMenus = new FluxoMenus(scanner, authService, usuarioService, produtoService, bancoRepository);
-        ProdutoMenu produtoMenu = new ProdutoMenu(produtoService, authService, scanner, printer);
+        ProdutoMenu produtoMenu = new ProdutoMenu(produtoService, authService, scanner, printer, fluxoMenus);
         UsuarioMenu usuarioMenu = new UsuarioMenu(fluxoMenus, usuarioService, authService, printer, scanner);
 
         Dataloader dataloader = new Dataloader(produtoService, usuarioService, bancoRepository);
@@ -41,10 +42,7 @@ public class Main {
 
 
         //----------------//
-
-
-
-            while (true) {
+        while (true) {
 
                 // menu inicial
 

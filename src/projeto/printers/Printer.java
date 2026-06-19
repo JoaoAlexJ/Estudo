@@ -10,6 +10,7 @@ public class Printer {
         System.out.println("=========================");
         System.out.println("ID: "+p.getId());
         System.out.println("Descrição: "+p.getDescricao());
+        System.out.println("Categoria: "+p.getCategoria());
         System.out.printf("Preço: R$ %.2f\n", p.getPreco());
         System.out.println("Estoque: "+p.getEstoque());
 

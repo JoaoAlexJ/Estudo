@@ -3,6 +3,7 @@ package projeto.Menu;
 import projeto.auth.AuthService;
 import projeto.auth.Sessao;
 import projeto.entidades.Cargo;
+import projeto.entidades.Categoria;
 import projeto.entidades.Produto;
 import projeto.exception.NegocioException;
 import projeto.printers.Printer;
@@ -17,33 +18,42 @@ public class ProdutoMenu {
     private AuthService authService;
     private Printer printer;
     private Scanner scanner;
+    private FluxoMenus fluxoMenus;
 
-    public ProdutoMenu(ProdutoService produtoService, AuthService authService, Scanner scanner, Printer printer) {
+    public ProdutoMenu(ProdutoService produtoService, AuthService authService, Scanner scanner, Printer printer, FluxoMenus fluxoMenus) {
         if (produtoService == null)throw new NegocioException("Produto Service inválido");
         if (authService == null)throw new NegocioException("Auth service inválido");
         if (scanner == null)throw new NegocioException("Scanner inválido");
         if (printer == null)throw new NegocioException("Printer inválido");
+        if (fluxoMenus == null)throw new NegocioException("Fluxo menus inválido");
 
 
         this.produtoService = produtoService;
         this.authService = authService;
         this.scanner = scanner;
         this.printer = printer;
+        this.fluxoMenus = fluxoMenus;
     }
 
     public MenuAcao iniciar(){
 
-        System.out.println("1 - Buscar produto");
-        System.out.println("2 - Listar produtos");
 
         if (Sessao.getUserLogado().getCargo() == Cargo.ADM){
 
+            System.out.println("1 - Buscar produto");
+            System.out.println("2 - Listar produtos");
             System.out.println("3 - Cadastrar produto");
             System.out.println("4 - Deletar produto");
             System.out.println("-----------------");
             System.out.println("5 - Alterar descrição");
             System.out.println("6 - Alterar preço");
             System.out.println("7 - Alterar estoque");
+            System.out.println("8 - Alterar Categoria");
+        }else {
+            System.out.println("1 - Buscar por categoria");
+            System.out.println("2 - Buscar por nome");
+            System.out.println("3 - listar todos");
+
         }
 
             System.out.println("0 - sair");
@@ -58,21 +68,45 @@ public class ProdutoMenu {
             switch (choice){
                 
                 case 1:
-                    System.out.print("Informe o ID do produto: \n");
-                    String id = scanner.nextLine();
+                    if (!authService.validarPermissao()){
 
-                    printer.printProduto(produtoService.buscar(UUID.fromString(id)));
-                    System.out.println("---------------------------");
+                        Categoria categoria = fluxoMenus.solicitarCategoria();
 
-                    return MenuAcao.CONTINUAR;
+                        for (Produto p :produtoService.listarPorCategoria(categoria)){
+                            printer.printProduto(p);
+                        }
+
+                        System.out.println("Informe o ID do produto que deseja comprar: ");
+                        String id = scanner.nextLine();
+
+                        Produto produto = produtoService.buscar(UUID.fromString(id));
+
+                    }else {
+
+                        System.out.print("Informe o ID do produto: \n");
+                        String id = scanner.nextLine();
+
+                        printer.printProduto(produtoService.buscar(UUID.fromString(id)));
+                        System.out.println("---------------------------");
+
+                        return MenuAcao.CONTINUAR;
+                    }
 
                 case 2:
-                    for (Produto p : produtoService.listar()){
-                        printer.printProduto(p);
 
+                    if (!authService.validarPermissao()){
+
+
+
+                    }else {
+
+                        for (Produto p : produtoService.listar()) {
+                            printer.printProduto(p);
+
+                        }
+                        System.out.println("---------------------------");
+                        return MenuAcao.CONTINUAR;
                     }
-                    System.out.println("---------------------------");
-                    return MenuAcao.CONTINUAR;
 
                 case 3:
 
@@ -81,19 +115,7 @@ public class ProdutoMenu {
                         return MenuAcao.CONTINUAR;
                     }else {
 
-                        System.out.println("Informe a descrição do produto: ");
-                        String descricao = scanner.nextLine();
-
-                        System.out.println("Informe o preço do produto");
-                        double preco = scanner.nextDouble();
-
-                        System.out.println("Informe o estoque do produto: ");
-                        int estoque = scanner.nextInt();
-
-                        produtoService.cadastrar(descricao, preco, estoque);
-                        System.out.println("Produto cadastrado com sucesso!");
-                        System.out.println("---------------------------");
-
+                        fluxoMenus.cadastrarProduto();
                         return MenuAcao.CONTINUAR;
                     }
 
@@ -174,6 +196,27 @@ public class ProdutoMenu {
                         System.out.println("Informação alterada com sucesso!");
 
                         printer.printProduto(produtoService.buscar(UUID.fromString(idAlterEstoque)));
+                        System.out.println("---------------------------");
+
+                        return MenuAcao.CONTINUAR;
+
+                    }
+
+                case 8:
+
+                    if (!authService.validarPermissao()){
+                        System.out.println("Opção inválida");
+                        return MenuAcao.CONTINUAR;
+                    }else {
+
+                        System.out.println("Informe o ID do produto que deseja fazer a alteração:");
+                        String idAlt = scanner.nextLine();
+
+                        Categoria categoria = fluxoMenus.solicitarCategoria();
+
+
+                        produtoService.alterarCategoria(UUID.fromString(idAlt), categoria );
+                        System.out.println("Categoria alterada com sucesso!");
                         System.out.println("---------------------------");
 
                         return MenuAcao.CONTINUAR;

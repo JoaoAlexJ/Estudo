@@ -1,10 +1,7 @@
 package projeto.app;
 
 import projeto.auth.Sessao;
-import projeto.entidades.Cargo;
-import projeto.entidades.ContaBancaria;
-import projeto.entidades.Produto;
-import projeto.entidades.Usuario;
+import projeto.entidades.*;
 import projeto.entidades.entidadeDeDominio.Banco;
 import projeto.exception.NegocioException;
 import projeto.repositorios.BancoRepository;
@@ -25,10 +22,10 @@ public class Dataloader {
 
     public void iniciar(){
 
-        Produto p1 = new Produto("Acabate", 3.50, 10);
-        Produto p2 = new Produto("Melancia", 10.30, 10);
-        Produto p3 = new Produto("Maçã", 3.20, 10);
-        Produto p4 = new Produto("Manga", 4.00, 10);
+        Produto p1 = new Produto(Categoria.ALIMENTO, "Acabate", 3.50, 10);
+        Produto p2 = new Produto(Categoria.ALIMENTO, "Melancia", 10.30, 10);
+        Produto p3 = new Produto(Categoria.ALIMENTO, "Maçã", 3.20, 10);
+        Produto p4 = new Produto(Categoria.ALIMENTO, "Manga", 4.00, 10);
 
         //---------------------------//
 
@@ -53,7 +50,9 @@ public class Dataloader {
         //-----------------------------//
 
         santander.adicionarConta(c1);
+
         bradesco.adicionarConta(c2);
+
         itau.adicionarConta(cCadastro);
         itau.adicionarConta(c3);
 
@@ -61,10 +60,10 @@ public class Dataloader {
 
 
 
-        produtoService.cadastrar(p1.getDescricao(), p1.getPreco(), p1.getEstoque());
-        produtoService.cadastrar(p2.getDescricao(), p2.getPreco(), p2.getEstoque());
-        produtoService.cadastrar(p3.getDescricao(), p3.getPreco(), p3.getEstoque());
-        produtoService.cadastrar(p4.getDescricao(), p4.getPreco(), p4.getEstoque());
+        produtoService.cadastrar(p1.getCategoria(), p1.getDescricao(), p1.getPreco(), p1.getEstoque());
+        produtoService.cadastrar(p2.getCategoria(), p2.getDescricao(), p2.getPreco(), p2.getEstoque());
+        produtoService.cadastrar(p3.getCategoria(), p3.getDescricao(), p3.getPreco(), p3.getEstoque());
+        produtoService.cadastrar(p4.getCategoria(), p4.getDescricao(), p4.getPreco(), p4.getEstoque());
 
         //-----------------------------//
 

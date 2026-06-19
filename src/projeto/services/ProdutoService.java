@@ -1,5 +1,6 @@
 package projeto.services;
 
+import projeto.entidades.Categoria;
 import projeto.entidades.Produto;
 import projeto.exception.NegocioException;
 import projeto.repositorios.ProdutoRepository;
@@ -19,13 +20,30 @@ public class ProdutoService {
         this.produtoRepository = produtoRepository;
     }
 
-    public void cadastrar(String descricao, double preco, int estoque){
-        Produto p = new Produto(descricao, preco, estoque);
+    public void cadastrar(Categoria categoria, String descricao, double preco, int estoque){
+        Produto p = new Produto(categoria, descricao, preco, estoque);
         produtoRepository.salvar(p);
     }
 
     public Produto buscar(UUID id){
         return produtoRepository.buscarPorID(id);
+    }
+
+    public Produto buscarPorDescricao(String descricao){
+        return listar().stream()
+                .filter(p -> p.getDescricao().equals(descricao))
+                .findFirst()
+                .orElseThrow(() -> new NegocioException("Produto não encontrado"));
+    }
+
+    public List<Produto> listarPorCategoria(Categoria categoria){
+
+        if (categoria == null)throw new NegocioException("Categoria inválida");
+
+        return listar().stream()
+                .filter(p -> p.getCategoria().equals(categoria))
+                .toList();
+
     }
 
     public List<Produto> listar (){
@@ -37,6 +55,8 @@ public class ProdutoService {
     }
 
     //------------------//
+
+    public void alterarCategoria(UUID id, Categoria categoria){buscar(id).setCategoria(categoria);}
 
     public void alterarPreco(UUID id, double preco){
         buscar(id).setPreco(preco);

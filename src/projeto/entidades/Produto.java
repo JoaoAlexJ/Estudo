@@ -8,11 +8,14 @@ import java.util.UUID;
 public class Produto {
 
     private UUID id;
+    private Categoria categoria;
     private String descricao;
     private double preco;
     private int estoque;
 
-    public Produto(String descricao, double preco, int estoque) {
+    public Produto(Categoria categoria, String descricao, double preco, int estoque) {
+        if (categoria == null)throw new NegocioException("Categoria inválida");
+
         if (descricao == null || descricao.isBlank()){
             throw new IllegalArgumentException("Descrição inválida");
         }
@@ -23,6 +26,7 @@ public class Produto {
             throw new IllegalArgumentException("Estoque inválido");
         }
 
+        this.categoria = categoria;
         this.descricao = descricao;
         this.preco = preco;
         this.estoque = estoque;
@@ -37,6 +41,14 @@ public class Produto {
     }
 
     //---------------------------//
+
+
+    public void setCategoria(Categoria categoria) {
+        if (categoria == null)throw new NegocioException("Novo categoria inválida");
+        if (categoria.equals(this.categoria))throw new NegocioException("A nova categoria precisa ser diferente da atual");
+
+        this.categoria = categoria;
+    }
 
     public void setDescricao(String descricao) {
         if (descricao == null || descricao.isBlank()){
@@ -71,6 +83,10 @@ public class Produto {
 
     public UUID getId() {
         return id;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
     }
 
     public String getDescricao() {
