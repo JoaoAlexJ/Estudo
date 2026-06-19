@@ -270,7 +270,7 @@ public class FluxoMenus {
 
     }
 
-    private void validarSenhaBanco(Banco b, ContaBancaria c){
+    public void validarSenhaBanco(Banco b, ContaBancaria c){
         while (true) {
 
             System.out.println("Informe sua senha: ");

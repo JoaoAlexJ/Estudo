@@ -2,9 +2,7 @@ package projeto.Menu;
 
 import projeto.auth.AuthService;
 import projeto.auth.Sessao;
-import projeto.entidades.Cargo;
-import projeto.entidades.Categoria;
-import projeto.entidades.Produto;
+import projeto.entidades.*;
 import projeto.exception.NegocioException;
 import projeto.printers.Printer;
 import projeto.services.ProdutoService;
@@ -68,6 +66,7 @@ public class ProdutoMenu {
             switch (choice){
                 
                 case 1:
+
                     if (!authService.validarPermissao()){
 
                         Categoria categoria = fluxoMenus.solicitarCategoria();
@@ -78,15 +77,47 @@ public class ProdutoMenu {
 
                         System.out.println("Informe o ID do produto que deseja comprar: ");
                         String id = scanner.nextLine();
-
                         Produto produto = produtoService.buscar(UUID.fromString(id));
 
-                        printer.printProduto(produto);
+                        System.out.println("Informe a quantidade que deseja desse produto:");
+                        int quantidade = scanner.nextInt();
+
+                        ObjDeCompra objDeCompra = new ObjDeCompra(produto.getId(), produto.getCategoria(),
+                                produto.getDescricao(), produto.getPreco(), quantidade);
+
+
+                        Sessao.getUserLogado().adicionarObjetoCompra(objDeCompra);
+                        printer.printCarrinho(Sessao.getUserLogado());
+
                         System.out.println("----------------------");
 
 
                         System.out.println("1 - Finalizar pedido");
                         System.out.println("2 - adicionar mais produtos ao carrinho");
+                        int choiceCarrinho = scanner.nextInt();
+
+                        switch (choiceCarrinho){
+
+                            case 1:
+
+                                Usuario user = Sessao.getUserLogado();
+
+                                System.out.println("--------- Dados bancário ----------");
+                                System.out.println("Titular: "+user.getContaBancaria().getTitular());
+                                System.out.println("Numero da conta: "+user.getContaBancaria().getNumeroConta());
+                                System.out.println();
+                                System.out.println();
+                                System.out.println();
+                                System.out.println();
+                                fluxoMenus.validarSenhaBanco(user.getContaBancaria().getBanco(), user.getContaBancaria());
+
+
+
+
+
+
+
+                        }
 
 
 

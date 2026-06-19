@@ -3,6 +3,8 @@ package projeto.entidades;
 import projeto.exception.NegocioException;
 import projeto.utils.SenhaUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -14,6 +16,7 @@ public class Usuario {
     private String senha;
     private Cargo cargo;
     private ContaBancaria contaBancaria;
+    private List<ObjDeCompra> carrinho;
 
     public Usuario(String nome, String email, String senha, Cargo cargo, ContaBancaria contaBancaria) {
         if (nome == null || nome.isBlank()){
@@ -37,6 +40,25 @@ public class Usuario {
         this.senha = senha;
         this.cargo = cargo;
         this.contaBancaria = contaBancaria;
+        this.carrinho = new ArrayList<>();
+    }
+
+    //------------------//
+
+    public  void adicionarObjetoCompra(ObjDeCompra o){
+        if (o == null)throw new NegocioException("Produto inválido");
+
+        carrinho.add(o);
+    }
+
+    public void removerProduto(ObjDeCompra o){
+        if (o == null)throw new NegocioException("Produto inválido");
+
+        carrinho.remove(o);
+    }
+
+    public List<ObjDeCompra> getCarrinho() {
+        return new ArrayList<>(carrinho);
     }
 
     //------------------//
@@ -45,7 +67,7 @@ public class Usuario {
         return contaBancaria != null;
     }
 
-
+    //------------------//
     public void setNome(String nome) {
         if (nome == null || nome.isBlank()){
             throw new NegocioException("Nome inválido");
