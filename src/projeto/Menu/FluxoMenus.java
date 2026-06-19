@@ -55,7 +55,7 @@ public class FluxoMenus {
         Banco banco = solicitarBanco();
         ContaBancaria contaBancaria = solicitarContaBancaria(banco);
 
-        loginBanco(banco, contaBancaria);
+        validarSenhaBanco(banco, contaBancaria);
 
         usuarioService.cadastrar(nome, email, senha, Cargo.COMUM, contaBancaria);
         System.out.println("Usuario cadastrado com sucesso");
@@ -166,7 +166,7 @@ public class FluxoMenus {
 
     }
 
-    private void loginBanco(Banco b, ContaBancaria c){
+    private void validarSenhaBanco(Banco b, ContaBancaria c){
         while (true) {
 
             System.out.println("Informe sua senha: ");

@@ -182,6 +182,7 @@ public class ProdutoMenu {
 
                 case  0:
                     System.out.println("saindo...");
+                    System.out.println("---------------------------");
                     return MenuAcao.SAIR;
 
 

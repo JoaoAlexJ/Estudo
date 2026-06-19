@@ -48,6 +48,8 @@ public class Main {
 
                 // menu inicial
 
+
+                System.out.println("========= Mercadão =========");
                 System.out.println("1 - Fazer login");
                 System.out.println("2 - Cadastrar uma conta");
                 System.out.println("0 - sair");
