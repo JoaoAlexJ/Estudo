@@ -81,6 +81,17 @@ public class ProdutoMenu {
 
                         Produto produto = produtoService.buscar(UUID.fromString(id));
 
+                        printer.printProduto(produto);
+                        System.out.println("----------------------");
+
+
+                        System.out.println("1 - Finalizar pedido");
+                        System.out.println("2 - adicionar mais produtos ao carrinho");
+
+
+
+
+
                     }else {
 
                         System.out.print("Informe o ID do produto: \n");
