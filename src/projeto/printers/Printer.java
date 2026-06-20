@@ -1,34 +1,36 @@
 package projeto.printers;
 
-import projeto.entidades.ObjDeCompra;
-import projeto.entidades.Produto;
-import projeto.entidades.Usuario;
+import projeto.entidades.*;
+import projeto.services.VendaService;
 
 public class Printer {
 
-    public void printCarrinho(Usuario user){
+    public  void printVenda(Venda venda){
+        System.out.println("========== Venda ==========");
+        System.out.println("ID: ");
+        System.out.println("Comprador: ");
+        printCarrinho(venda.getCarrinho());
+        System.out.println("Data: "+venda.getData());
+
+
+
+    }
+
+
+    public void printCarrinho(Carrinho carrinho){
 
         System.out.println("===== Carrinho de compra ========");
-        System.out.println("User: "+user.getNome());
-        System.out.println(user.getEmail());
-        System.out.println(".");
-        System.out.println(".");
-        System.out.println(".");
+       for (ObjDeCompra o : carrinho.getProdutos()){
+           printObjCompra(o);
+       }
 
-        double valorTotal = 0;
+        System.out.println("-------------------------------");
+        System.out.println("Valor Total: "+carrinho.calcularValorTotal());
 
-        for(ObjDeCompra o : user.getCarrinho()){
-            printObjCompra(o);
-
-            valorTotal += o.getPreco();
-            System.out.println("----------------------");
-        }
-
-        System.out.printf("Valor Total: R$ %.2f\n",valorTotal );
     }
 
     public void printObjCompra(ObjDeCompra compra){
-        System.out.println("=========================");
+        System.out.println("-------------------------------");
         System.out.println("ID: "+compra.getId());
         System.out.println("Descrição: "+compra.getDescricao());
         System.out.println("Categoria: "+compra.getCategoria());

@@ -16,7 +16,7 @@ public class Usuario {
     private String senha;
     private Cargo cargo;
     private ContaBancaria contaBancaria;
-    private List<ObjDeCompra> carrinho;
+    private Carrinho carrinho;
 
     public Usuario(String nome, String email, String senha, Cargo cargo, ContaBancaria contaBancaria) {
         if (nome == null || nome.isBlank()){
@@ -40,28 +40,11 @@ public class Usuario {
         this.senha = senha;
         this.cargo = cargo;
         this.contaBancaria = contaBancaria;
-        this.carrinho = new ArrayList<>();
+        this.carrinho = new Carrinho();
     }
 
     //------------------//
 
-    public  void adicionarObjetoCompra(ObjDeCompra o){
-        if (o == null)throw new NegocioException("Produto inválido");
-
-        carrinho.add(o);
-    }
-
-    public void removerProduto(ObjDeCompra o){
-        if (o == null)throw new NegocioException("Produto inválido");
-
-        carrinho.remove(o);
-    }
-
-    public List<ObjDeCompra> getCarrinho() {
-        return new ArrayList<>(carrinho);
-    }
-
-    //------------------//
 
     public boolean possuiContaBancaria(){
         return contaBancaria != null;
@@ -106,7 +89,6 @@ public class Usuario {
     }
     //-----------------//
 
-
     public UUID getId() {
         return id;
     }
@@ -129,6 +111,10 @@ public class Usuario {
 
     public ContaBancaria getContaBancaria() {
         return contaBancaria;
+    }
+
+    public Carrinho getCarrinho() {
+        return carrinho;
     }
 
     @Override

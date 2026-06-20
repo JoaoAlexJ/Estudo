@@ -6,12 +6,15 @@ import projeto.Menu.UsuarioMenu;
 import projeto.auth.AuthService;
 import projeto.auth.Sessao;
 import projeto.entidades.Categoria;
+import projeto.entidades.Venda;
 import projeto.printers.Printer;
 import projeto.repositorios.BancoRepository;
 import projeto.repositorios.ProdutoRepository;
 import projeto.repositorios.UsuarioRepository;
+import projeto.repositorios.VendaRepository;
 import projeto.services.ProdutoService;
 import projeto.services.UsuarioService;
+import projeto.services.VendaService;
 
 import java.util.Scanner;
 
@@ -26,13 +29,15 @@ public class Main {
         ProdutoRepository produtoRepository = new ProdutoRepository();
         UsuarioRepository usuarioRepository = new UsuarioRepository();
         BancoRepository bancoRepository = new BancoRepository();
+        VendaRepository vendaRepository = new VendaRepository();
 
         ProdutoService produtoService = new ProdutoService(produtoRepository);
         UsuarioService usuarioService = new UsuarioService(usuarioRepository);
         AuthService authService = new AuthService(usuarioService, scanner);
+        VendaService vendaService = new VendaService(vendaRepository, produtoService);
 
         FluxoMenus fluxoMenus = new FluxoMenus(scanner, authService, usuarioService, produtoService, bancoRepository);
-        ProdutoMenu produtoMenu = new ProdutoMenu(produtoService, authService, scanner, printer, fluxoMenus);
+        ProdutoMenu produtoMenu = new ProdutoMenu(produtoService, authService, vendaService, scanner, printer, fluxoMenus);
         UsuarioMenu usuarioMenu = new UsuarioMenu(fluxoMenus, usuarioService, authService, printer, scanner);
 
         Dataloader dataloader = new Dataloader(produtoService, usuarioService, bancoRepository);

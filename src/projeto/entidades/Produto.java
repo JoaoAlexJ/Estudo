@@ -32,6 +32,25 @@ public class Produto {
         this.estoque = estoque;
     }
 
+
+    public void aumentarEstoque(int valor){
+
+        if (valor <= 0)throw new NegocioException("Valor inválido");
+
+        estoque += valor;
+    }
+
+    public void diminuirEstoque(int valor){
+        if (valor <= 0)throw new NegocioException("valor inválido");
+        if (valor > estoque)throw new NegocioException("Valor indisponível");
+
+
+        estoque -= valor;
+    }
+
+
+    //-------------------------//
+
     public void setId(UUID id) {
         if (this.id != null){
             throw new RuntimeException("ID já cadastrado");

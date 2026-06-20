@@ -20,6 +20,13 @@ public class ProdutoService {
         this.produtoRepository = produtoRepository;
     }
 
+    //--------------------------//
+
+
+
+
+
+
     public void cadastrar(Categoria categoria, String descricao, double preco, int estoque){
         Produto p = new Produto(categoria, descricao, preco, estoque);
         produtoRepository.salvar(p);
@@ -31,7 +38,7 @@ public class ProdutoService {
 
     public Produto buscarPorDescricao(String descricao){
         return listar().stream()
-                .filter(p -> p.getDescricao().equals(descricao))
+                .filter(p -> p.getDescricao().equalsIgnoreCase(descricao))
                 .findFirst()
                 .orElseThrow(() -> new NegocioException("Produto não encontrado"));
     }
@@ -68,5 +75,15 @@ public class ProdutoService {
 
     public void alterarEstoque(UUID id, int estoque){
         buscar(id).setEstoque(estoque);
+    }
+
+    //-------------------//
+
+    public void aumentarEstoque(UUID id, int valor){
+        buscar(id).aumentarEstoque(valor);
+    }
+
+    public void diminuirEstoque(UUID id, int valor){
+        buscar(id).diminuirEstoque(valor);
     }
 }

@@ -1,14 +1,15 @@
 package projeto.Menu;
 
 import projeto.auth.AuthService;
-import projeto.entidades.Cargo;
-import projeto.entidades.Categoria;
-import projeto.entidades.ContaBancaria;
+import projeto.auth.Sessao;
+import projeto.entidades.*;
 import projeto.entidades.entidadeDeDominio.Banco;
 import projeto.exception.NegocioException;
+import projeto.printers.Printer;
 import projeto.repositorios.BancoRepository;
 import projeto.services.ProdutoService;
 import projeto.services.UsuarioService;
+import projeto.services.VendaService;
 
 import java.util.Scanner;
 
@@ -19,6 +20,8 @@ public class FluxoMenus {
     private UsuarioService usuarioService;
     private ProdutoService produtoService;
     private BancoRepository bancoRepository;
+    private Printer printer;
+    private VendaService vendaService;
 
     public FluxoMenus(Scanner scanner, AuthService authService, UsuarioService usuarioService,
                       ProdutoService produtoService, BancoRepository bancoRepository) {
@@ -35,6 +38,90 @@ public class FluxoMenus {
         this.produtoService = produtoService;
         this.bancoRepository = bancoRepository;
     }
+
+    //----- Venda -------
+
+
+    public MenuAcao vendaFluxo(){
+
+        Usuario user = Sessao.getUserLogado();
+
+        System.out.println("Informe a descrição do produto que deseja comprar: ");
+        String descricao = scanner.nextLine();
+        Produto produto = produtoService.buscarPorDescricao(descricao);
+
+        System.out.println("Informe a quantidade que deseja desse produto:");
+        int quantidade = scanner.nextInt();
+
+        ObjDeCompra objDeCompra = new ObjDeCompra(produto.getId(), produto.getCategoria(),
+                produto.getDescricao(), produto.getPreco(), quantidade);
+
+
+
+        user.getCarrinho().adicionarObjCompra(objDeCompra);
+        printer.printCarrinho(user.getCarrinho());
+
+        System.out.println("----------------------");
+
+
+        boolean execute = true;
+
+        while (execute) {
+
+
+            System.out.println("1 - Finalizar pedido");
+            System.out.println("2 - adicionar mais produtos ao carrinho");
+            System.out.println("3 - voltar");
+            int choiceCarrinho = scanner.nextInt();
+
+            switch (choiceCarrinho) {
+
+                case 1:
+
+
+                    System.out.println("--------- Dados bancário ----------");
+                    System.out.println("Titular: " + user.getContaBancaria().getTitular());
+                    System.out.println("Numero da conta: " + user.getContaBancaria().getNumeroConta());
+                    validarSenhaBanco(user.getContaBancaria().getBanco(), user.getContaBancaria());
+
+                    Venda venda = vendaService.realizarVenda(user, user.getCarrinho());
+
+                    System.out.println("Pagamento aprovado!");
+                    System.out.println("Valor: " + user.getCarrinho().calcularValorTotal());
+                    System.out.println("------------------------------------");
+
+                    printer.printVenda(venda);
+
+                    execute = false;
+                    return MenuAcao.CONTINUAR;
+
+
+                case 2:
+
+                    execute = false;
+                    return MenuAcao.CONTINUAR;
+
+                case 3:
+                    System.out.println("voltando...");
+                    execute = false;
+                    return MenuAcao.CONTINUAR;
+
+
+                default:
+                    System.out.println("Opção inválida");
+                    return MenuAcao.CONTINUAR;
+
+
+            }
+
+        }
+
+
+    }
+
+
+
+    //----- Usuario -----
 
     public void loginFluxo(){
 
@@ -64,18 +151,6 @@ public class FluxoMenus {
 
     }
 
-    public void cadastrarProduto(){
-
-        String descricao = solicitarDescricao();
-        Categoria categoria = solicitarCategoria();
-        double preco = solicitarPreco();
-        int estoque = solicitarEstoque();
-
-        produtoService.cadastrar(categoria, descricao, preco, estoque);
-        System.out.println("Produto cadastrado com sucesso!");
-        System.out.println("-----------------------------");
-
-    }
 
 
     //----Metodos Auxiliares-----//
@@ -121,8 +196,21 @@ public class FluxoMenus {
 
     //------------//
 
+
     //Produtos
 
+    public void cadastrarProduto(){
+
+        String descricao = solicitarDescricao();
+        Categoria categoria = solicitarCategoria();
+        double preco = solicitarPreco();
+        int estoque = solicitarEstoque();
+
+        produtoService.cadastrar(categoria, descricao, preco, estoque);
+        System.out.println("Produto cadastrado com sucesso!");
+        System.out.println("-----------------------------");
+
+    }
 
     private String solicitarDescricao(){
         System.out.println("Informe uma descrição válida para o produto");
@@ -291,6 +379,8 @@ public class FluxoMenus {
     }
 
     //--------------//
+
+
 
     public void executarMenuProduto(ProdutoMenu produtoMenu){
 
