@@ -30,6 +30,27 @@ public class ContaBancaria {
         this.saldo = saldo;
     }
 
+
+    //--------- metodos saldo -----------//
+
+    public double sacar(double valor){
+
+        if (valor <= 0)throw new NegocioException("Valor inválido");
+        if (valor > saldo)throw new NegocioException("Saldo insuficiente");
+
+        saldo -= valor;
+
+        return valor;
+    }
+
+    public void depositar(double valor){
+        if (valor <= 0)throw new NegocioException("Valor inválido");
+
+        saldo += valor;
+    }
+
+
+
     public String getTitular() {
         return titular;
     }

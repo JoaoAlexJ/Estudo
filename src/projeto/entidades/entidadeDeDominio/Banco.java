@@ -52,8 +52,4 @@ public class Banco {
     public String getNome() {
         return nome;
     }
-
-    public Map<String, ContaBancaria> getContas() {
-        return contas;
-    }
 }
