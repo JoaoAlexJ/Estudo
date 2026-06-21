@@ -36,9 +36,9 @@ public class Main {
         AuthService authService = new AuthService(usuarioService, scanner);
         VendaService vendaService = new VendaService(vendaRepository, produtoService);
 
-        FluxoMenus fluxoMenus = new FluxoMenus(scanner, authService, usuarioService, produtoService, bancoRepository);
+        FluxoMenus fluxoMenus = new FluxoMenus(scanner, authService, usuarioService, produtoService, bancoRepository, printer, vendaService);
         ProdutoMenu produtoMenu = new ProdutoMenu(produtoService, authService, vendaService, scanner, printer, fluxoMenus);
-        UsuarioMenu usuarioMenu = new UsuarioMenu(fluxoMenus, usuarioService, authService, printer, scanner);
+        UsuarioMenu usuarioMenu = new UsuarioMenu(fluxoMenus, usuarioService, vendaService, authService, printer, scanner);
 
         Dataloader dataloader = new Dataloader(produtoService, usuarioService, bancoRepository);
 

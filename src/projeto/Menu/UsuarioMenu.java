@@ -4,9 +4,11 @@ import projeto.auth.AuthService;
 import projeto.auth.Sessao;
 import projeto.entidades.Cargo;
 import projeto.entidades.Usuario;
+import projeto.entidades.Venda;
 import projeto.exception.NegocioException;
 import projeto.printers.Printer;
 import projeto.services.UsuarioService;
+import projeto.services.VendaService;
 
 import java.util.Scanner;
 import java.util.UUID;
@@ -15,19 +17,22 @@ public class UsuarioMenu {
 
     private FluxoMenus fluxoMenus;
     private UsuarioService usuarioService;
+    private VendaService vendaService;
     private AuthService authService;
     private Printer printer;
     private Scanner scanner;
 
-    public UsuarioMenu(FluxoMenus fluxoMenus, UsuarioService usuarioService, AuthService authService, Printer printer, Scanner scanner) {
+    public UsuarioMenu(FluxoMenus fluxoMenus, UsuarioService usuarioService, VendaService vendaService, AuthService authService, Printer printer, Scanner scanner) {
         if (fluxoMenus == null)throw new NegocioException("Fluxo menu inválido");
         if (usuarioService == null)throw new NegocioException("Usuario Service inválido");
+        if (vendaService == null)throw new NegocioException("Venda Service inválido");
         if (authService == null)throw new NegocioException("Auth Service inválido");
         if (printer == null)throw new NegocioException("Printer inválido");
         if (scanner == null)throw new NegocioException("Scarnner inválido");
 
         this.fluxoMenus = fluxoMenus;
         this.usuarioService = usuarioService;
+        this.vendaService = vendaService;
         this.authService = authService;
         this.printer = printer;
         this.scanner = scanner;
@@ -40,6 +45,7 @@ public class UsuarioMenu {
             System.out.println("2 - alterar e-mail");
             System.out.println("3 - alterar senha");
             System.out.println("4 - vizualizar dados da conta");
+            System.out.println("5 - vizualizar pedidos feitos");
         }
         else {
 
@@ -224,7 +230,16 @@ public class UsuarioMenu {
             case 5:
 
                 if (!authService.validarPermissao()){
-                    System.out.println("Opção inválido");
+
+                    if (vendaService.listarVendasCliente(Sessao.getUserLogado().getId()).isEmpty()){
+                        System.out.println("Nenhuma compra registrada nessa conta.");
+                    }
+
+                    for (Venda venda : vendaService.listarVendasCliente(Sessao.getUserLogado().getId())){
+                        printer.printVenda(venda);
+                    }
+
+                    System.out.println("----------------------");
                     return MenuAcao.CONTINUAR;
                 }else{
 

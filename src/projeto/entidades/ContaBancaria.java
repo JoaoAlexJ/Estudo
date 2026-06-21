@@ -49,7 +49,11 @@ public class ContaBancaria {
         saldo += valor;
     }
 
+    public boolean validarSenha(String numeroConta, String senha){
 
+        if (numeroConta.equals(this.numeroConta) && senha.equals(this.senha))return true; else return false;
+
+    }
 
     public String getTitular() {
         return titular;

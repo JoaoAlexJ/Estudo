@@ -55,7 +55,7 @@ public class ProdutoMenu {
         }else {
             System.out.println("1 - Buscar por categoria");
             System.out.println("2 - Buscar por nome");
-            System.out.println("3 - listar todos");
+            System.out.println("3 - ver produtos");
 
         }
         if (Sessao.getUserLogado().getCargo() == Cargo.COMUM &&
@@ -82,85 +82,15 @@ public class ProdutoMenu {
 
                         Categoria categoria = fluxoMenus.solicitarCategoria();
 
+                        scanner.nextLine();
+
                         for (Produto p :produtoService.listarPorCategoria(categoria)){
                             printer.printProduto(p);
                         }
 
-                        // Adicionar abstração de finalizaçãp de venda
-
-                        Usuario user = Sessao.getUserLogado();
-
-                        System.out.println("Informe a descrição do produto que deseja comprar: ");
-                        String descricao = scanner.nextLine();
-                        Produto produto = produtoService.buscarPorDescricao(descricao);
-
-                        System.out.println("Informe a quantidade que deseja desse produto:");
-                        int quantidade = scanner.nextInt();
-
-                        ObjDeCompra objDeCompra = new ObjDeCompra(produto.getId(), produto.getCategoria(),
-                                produto.getDescricao(), produto.getPreco(), quantidade);
-
-
-
-                        user.getCarrinho().adicionarObjCompra(objDeCompra);
-                        printer.printCarrinho(user.getCarrinho());
 
                         System.out.println("----------------------");
-
-
-                        boolean execute = true;
-
-                        while (execute) {
-
-
-                            System.out.println("1 - Finalizar pedido");
-                            System.out.println("2 - adicionar mais produtos ao carrinho");
-                            System.out.println("3 - voltar");
-                            int choiceCarrinho = scanner.nextInt();
-
-                            switch (choiceCarrinho) {
-
-                                case 1:
-
-
-                                    System.out.println("--------- Dados bancário ----------");
-                                    System.out.println("Titular: " + user.getContaBancaria().getTitular());
-                                    System.out.println("Numero da conta: " + user.getContaBancaria().getNumeroConta());
-                                    fluxoMenus.validarSenhaBanco(user.getContaBancaria().getBanco(), user.getContaBancaria());
-
-                                    Venda venda = vendaService.realizarVenda(user, user.getCarrinho());
-
-                                    System.out.println("Pagamento aprovado!");
-                                    System.out.println("Valor: " + user.getCarrinho().calcularValorTotal());
-                                    System.out.println("------------------------------------");
-
-                                    printer.printVenda(venda);
-
-                                    execute = false;
-                                    return MenuAcao.CONTINUAR;
-
-
-                                case 2:
-
-                                    execute = false;
-                                    return MenuAcao.CONTINUAR;
-
-                                case 3:
-                                    System.out.println("voltando...");
-                                    execute = false;
-                                    return MenuAcao.CONTINUAR;
-
-
-                                default:
-                                    System.out.println("Opção inválida");
-                                    return MenuAcao.CONTINUAR;
-
-
-                            }
-
-                        }
-
-
+                        return fluxoMenus.menuDecisao();
 
 
                     }else {
@@ -178,7 +108,16 @@ public class ProdutoMenu {
 
                     if (!authService.validarPermissao()){
 
+                        System.out.println("Pesquisar: ");
+                        String descricao = scanner.nextLine();
 
+                        Produto produto = produtoService.buscarPorDescricao(descricao);
+
+                        printer.printProduto(produto);
+
+
+                        System.out.println("----------------------");
+                        return fluxoMenus.menuDecisao2(produto);
 
                     }else {
 
@@ -193,8 +132,15 @@ public class ProdutoMenu {
                 case 3:
 
                     if (!authService.validarPermissao()){
-                        System.out.println("Opção inválida");
-                        return MenuAcao.CONTINUAR;
+
+                        for (Produto p : produtoService.listar()) {
+                            printer.printProduto(p);
+
+                        }
+
+                        System.out.println("----------------------");
+                        return fluxoMenus.menuDecisao();
+
                     }else {
 
                         fluxoMenus.cadastrarProduto();
@@ -203,14 +149,10 @@ public class ProdutoMenu {
 
                 case 4:
 
-                    if (Sessao.getUserLogado().getCargo() == Cargo.COMUM &&
+                    if (!authService.validarPermissao() &&
                             !Sessao.getUserLogado().getCarrinho().getProdutos().isEmpty()) {
 
-
-                        //finalizar
-
-
-
+                        fluxoMenus.finalizarVenda();
                         return MenuAcao.CONTINUAR;
 
                     }else if (!authService.validarPermissao()){
@@ -319,7 +261,6 @@ public class ProdutoMenu {
 
                 case  0:
                     System.out.println("saindo...");
-                    System.out.println("---------------------------");
                     return MenuAcao.SAIR;
 
 

@@ -24,10 +24,11 @@ public class Carrinho {
     public double calcularValorTotal(){
 
         double valorTotal = 0;
+        double valorTotalProduto = 0;
 
        for (ObjDeCompra o : carrinho){
-           valorTotal += o.getPreco();
-
+        valorTotalProduto = o.getPreco() * o.getQuantidade();
+        valorTotal += valorTotalProduto;
        }
 
        return valorTotal;

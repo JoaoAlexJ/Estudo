@@ -22,6 +22,7 @@ public class VendaService {
        if (produtoService == null)throw new NegocioException("Produto service inválido");
 
         this.vendaRepository = vendaRepository;
+        this.produtoService = produtoService;
     }
 
     //-------------------------------//

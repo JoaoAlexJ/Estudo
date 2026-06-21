@@ -24,19 +24,25 @@ public class FluxoMenus {
     private VendaService vendaService;
 
     public FluxoMenus(Scanner scanner, AuthService authService, UsuarioService usuarioService,
-                      ProdutoService produtoService, BancoRepository bancoRepository) {
+                      ProdutoService produtoService, BancoRepository bancoRepository, Printer printer, VendaService vendaService) {
 
         if (scanner == null)throw new NegocioException("Scanner inválido");
         if (authService == null)throw new NegocioException("Auth Service inválido");
         if (usuarioService == null)throw new NegocioException("Usuario service inválido");
         if (produtoService == null)throw new NegocioException("Produto Service inválido");
         if (bancoRepository == null)throw new NegocioException("Banco inválido");
+        if (printer == null)throw new NegocioException("Printer inválido");
+        if (vendaService == null)throw new NegocioException("Venda Service inválido");
+
 
         this.scanner = scanner;
         this.authService = authService;
         this.usuarioService = usuarioService;
         this.produtoService = produtoService;
         this.bancoRepository = bancoRepository;
+        this.printer = printer;
+        this.vendaService = vendaService;
+
     }
 
     //----- Venda -------
@@ -52,6 +58,8 @@ public class FluxoMenus {
 
         System.out.println("Informe a quantidade que deseja desse produto:");
         int quantidade = scanner.nextInt();
+
+        if (quantidade > produto.getEstoque())throw new NegocioException("estoque insuficiente");
 
         ObjDeCompra objDeCompra = new ObjDeCompra(produto.getId(), produto.getCategoria(),
                 produto.getDescricao(), produto.getPreco(), quantidade);
@@ -72,37 +80,27 @@ public class FluxoMenus {
             System.out.println("1 - Finalizar pedido");
             System.out.println("2 - adicionar mais produtos ao carrinho");
             System.out.println("3 - voltar");
+            System.out.print("-> ");
             int choiceCarrinho = scanner.nextInt();
+
+            scanner.nextLine();
 
             switch (choiceCarrinho) {
 
                 case 1:
-
-
-                    System.out.println("--------- Dados bancário ----------");
-                    System.out.println("Titular: " + user.getContaBancaria().getTitular());
-                    System.out.println("Numero da conta: " + user.getContaBancaria().getNumeroConta());
-                    validarSenhaBanco(user.getContaBancaria().getBanco(), user.getContaBancaria());
-
-                    Venda venda = vendaService.realizarVenda(user, user.getCarrinho());
-
-                    System.out.println("Pagamento aprovado!");
-                    System.out.println("Valor: " + user.getCarrinho().calcularValorTotal());
-                    System.out.println("------------------------------------");
-
-                    printer.printVenda(venda);
-
-                    execute = false;
+                    finalizarVenda();
                     return MenuAcao.CONTINUAR;
 
 
                 case 2:
 
                     execute = false;
+                    System.out.println("----------------------");
                     return MenuAcao.CONTINUAR;
 
                 case 3:
                     System.out.println("voltando...");
+                    System.out.println("----------------------");
                     execute = false;
                     return MenuAcao.CONTINUAR;
 
@@ -117,6 +115,99 @@ public class FluxoMenus {
         }
 
 
+        return null;
+    }
+
+    public MenuAcao vendaFluxo2(Produto produto){
+
+        Usuario user = Sessao.getUserLogado();
+
+        System.out.println("Informe a quantidade que deseja desse produto:");
+        int quantidade = scanner.nextInt();
+
+        if (quantidade > produto.getEstoque())throw new NegocioException("estoque insuficiente");
+
+        ObjDeCompra objDeCompra = new ObjDeCompra(produto.getId(), produto.getCategoria(),
+                produto.getDescricao(), produto.getPreco(), quantidade);
+
+
+
+        user.getCarrinho().adicionarObjCompra(objDeCompra);
+        printer.printCarrinho(user.getCarrinho());
+
+        System.out.println("----------------------");
+
+
+        boolean execute = true;
+
+        while (execute) {
+
+
+            System.out.println("1 - Finalizar pedido");
+            System.out.println("2 - adicionar mais produtos ao carrinho");
+            System.out.println("3 - voltar");
+            System.out.print("-> ");
+
+            int choiceCarrinho = scanner.nextInt();
+
+            scanner.nextLine();
+
+            switch (choiceCarrinho) {
+
+                case 1:
+                    finalizarVenda();
+                    System.out.println("----------------------");
+                    return MenuAcao.CONTINUAR;
+
+
+                case 2:
+
+                    execute = false;
+                    System.out.println("----------------------");
+                    return MenuAcao.CONTINUAR;
+
+                case 3:
+                    System.out.println("voltando...");
+                    System.out.println("----------------------");
+                    execute = false;
+                    return MenuAcao.CONTINUAR;
+
+
+                default:
+                    System.out.println("Opção inválida");
+                    return MenuAcao.CONTINUAR;
+
+
+            }
+
+        }
+
+
+        return null;
+    }
+
+
+    public void finalizarVenda(){
+        Usuario user = Sessao.getUserLogado();
+
+        printer.printCarrinho(user.getCarrinho());
+
+        System.out.println("--------- Dados bancário ----------");
+        System.out.println("Titular: " + user.getContaBancaria().getTitular());
+        System.out.println("Numero da conta: " + user.getContaBancaria().getNumeroConta());
+
+        validarSenhaBanco(user.getContaBancaria());
+
+        Venda venda = vendaService.realizarVenda(user, user.getCarrinho());
+
+        System.out.println("Pagamento aprovado!");
+        System.out.printf("Valor: %.2f\n", user.getCarrinho().calcularValorTotal());
+        System.out.println("------------------------------------");
+
+        printer.printVenda(venda);
+        System.out.println("------------------------------------");
+
+        user.getCarrinho().limparCarrinho();
     }
 
 
@@ -143,7 +234,7 @@ public class FluxoMenus {
         Banco banco = solicitarBanco();
         ContaBancaria contaBancaria = solicitarContaBancaria(banco);
 
-        validarSenhaBanco(banco, contaBancaria);
+        validarSenhaBanco(contaBancaria);
 
         usuarioService.cadastrar(nome, email, senha, Cargo.COMUM, contaBancaria);
         System.out.println("Usuario cadastrado com sucesso");
@@ -154,6 +245,84 @@ public class FluxoMenus {
 
 
     //----Metodos Auxiliares-----//
+
+    public MenuAcao menuDecisao(){
+
+        boolean execute = true;
+
+        while (execute) {
+
+            System.out.println("1- comprar");
+            System.out.println("2- voltar");
+            System.out.print("-> ");
+            int menu = scanner.nextInt();
+
+            scanner.nextLine();
+
+            switch (menu){
+
+                case 1:
+
+                    execute = false;
+                    return vendaFluxo();
+
+                case 2:
+
+                    execute = false;
+                    System.out.println("----------------------");
+                    return MenuAcao.CONTINUAR;
+
+                default:
+
+                    System.out.println("Opção inválida");
+                    break;
+
+
+
+            }
+        }
+
+        return null;
+    }
+
+    public MenuAcao menuDecisao2(Produto produto){
+
+        boolean execute = true;
+
+        while (execute) {
+
+            System.out.println("1- comprar");
+            System.out.println("2- voltar");
+            System.out.print("-> ");
+            int menu = scanner.nextInt();
+
+            scanner.nextLine();
+
+            switch (menu){
+
+                case 1:
+
+                    execute = false;
+                    return vendaFluxo2(produto);
+
+                case 2:
+
+                    execute = false;
+                    System.out.println("----------------------");
+                    return MenuAcao.CONTINUAR;
+
+                default:
+
+                    System.out.println("Opção inválida");
+                    break;
+
+
+
+            }
+        }
+
+        return null;
+    }
 
     private String solicitarNome(){
 
@@ -231,6 +400,7 @@ public class FluxoMenus {
             System.out.println("4 - Mobília");
             System.out.println("5 - Decoração");
             System.out.println("6 - Pet");
+            System.out.print("-> ");
             int num = scanner.nextInt();
 
 
@@ -298,6 +468,7 @@ public class FluxoMenus {
    //---------------//
    //banco
 
+
     private Banco solicitarBanco(){
 
         Banco banco = null;
@@ -358,15 +529,15 @@ public class FluxoMenus {
 
     }
 
-    public void validarSenhaBanco(Banco b, ContaBancaria c){
+    public void validarSenhaBanco(ContaBancaria c){
         while (true) {
 
-            System.out.println("Informe sua senha: ");
+            System.out.println("Informe sua senha ");
             System.out.print("-> ");
             String senhaBanco = scanner.nextLine();
 
 
-            if (!b.login(c.getNumeroConta(), senhaBanco)) {
+            if (!c.validarSenha(c.getNumeroConta(), senhaBanco)) {
                 System.out.println("Senha ou numero da conta inválido");
                 continue;
             }

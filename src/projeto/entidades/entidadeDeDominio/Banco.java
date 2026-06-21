@@ -38,13 +38,6 @@ public class Banco {
 
     }
 
-    public boolean login(String numeroConta, String senha){
-
-        if (findConta(numeroConta).getSenha().equals(senha))return true; else return false;
-
-
-    }
-
     public UUID getId() {
         return id;
     }

@@ -7,11 +7,15 @@ public class Printer {
 
     public  void printVenda(Venda venda){
         System.out.println("========== Venda ==========");
-        System.out.println("ID: ");
-        System.out.println("Comprador: ");
-        printCarrinho(venda.getCarrinho());
+        System.out.println("ID da venda: "+venda.getId());
+        System.out.println("Comprador: "+venda.getComprador().getEmail());
         System.out.println("Data: "+venda.getData());
 
+        for (ObjDeCompra o : venda.getCarrinho().getProdutos()){
+            printObjCompra(o);
+        }
+        System.out.println("------------------------------------");
+        System.out.printf("Valor da venda: %.2f\n", venda.getValor());
 
 
     }
@@ -25,13 +29,13 @@ public class Printer {
        }
 
         System.out.println("-------------------------------");
-        System.out.println("Valor Total: "+carrinho.calcularValorTotal());
+        System.out.printf("Valor Total: %.2f\n", carrinho.calcularValorTotal());
 
     }
 
     public void printObjCompra(ObjDeCompra compra){
         System.out.println("-------------------------------");
-        System.out.println("ID: "+compra.getId());
+        System.out.println("ID do produto: "+compra.getId());
         System.out.println("Descrição: "+compra.getDescricao());
         System.out.println("Categoria: "+compra.getCategoria());
         System.out.printf("Preço: R$ %.2f\n", compra.getPreco());
