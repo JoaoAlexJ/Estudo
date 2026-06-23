@@ -1,12 +1,14 @@
 package projeto.Menu;
 
+import projeto.Menu.Fluxos.FluxoMenus;
+import projeto.Menu.Fluxos.FluxoProdutos;
+import projeto.Menu.Fluxos.FluxoVenda;
 import projeto.auth.AuthService;
 import projeto.auth.Sessao;
 import projeto.entidades.*;
 import projeto.exception.NegocioException;
 import projeto.printers.Printer;
 import projeto.services.ProdutoService;
-import projeto.services.UsuarioService;
 import projeto.services.VendaService;
 
 import java.util.Scanner;
@@ -16,26 +18,34 @@ public class ProdutoMenu {
 
     private ProdutoService produtoService;
     private AuthService authService;
-    private VendaService vendaService;
     private Printer printer;
     private Scanner scanner;
-    private FluxoMenus fluxoMenus;
 
-    public ProdutoMenu(ProdutoService produtoService, AuthService authService, VendaService vendaService, Scanner scanner, Printer printer, FluxoMenus fluxoMenus) {
+    public FluxoProdutos fluxoProdutos;
+    private FluxoMenus fluxoMenus;
+    private FluxoVenda fluxoVenda;
+
+    public ProdutoMenu(ProdutoService produtoService, AuthService authService, Scanner scanner,
+                       Printer printer,FluxoProdutos fluxoProdutos, FluxoMenus fluxoMenus, FluxoVenda fluxoVenda) {
+
         if (produtoService == null)throw new NegocioException("Produto Service inválido");
         if (authService == null)throw new NegocioException("Auth service inválido");
-        if (vendaService == null)throw new NegocioException("Venda service inválida");
         if (scanner == null)throw new NegocioException("Scanner inválido");
         if (printer == null)throw new NegocioException("Printer inválido");
+
+        if (fluxoProdutos == null)throw new NegocioException("Fluxo produtos inválido");
         if (fluxoMenus == null)throw new NegocioException("Fluxo menus inválido");
+        if (fluxoVenda == null)throw new NegocioException("Fluxo vendas inválido");
 
 
         this.produtoService = produtoService;
         this.authService = authService;
-        this.vendaService = vendaService;
         this.scanner = scanner;
         this.printer = printer;
+
+        this.fluxoProdutos = fluxoProdutos;
         this.fluxoMenus = fluxoMenus;
+        this.fluxoVenda = fluxoVenda;
     }
 
     public MenuAcao iniciar(){
@@ -80,7 +90,7 @@ public class ProdutoMenu {
 
                     if (!authService.validarPermissao()){
 
-                        Categoria categoria = fluxoMenus.solicitarCategoria();
+                        Categoria categoria = fluxoProdutos.solicitarCategoria();
 
                         scanner.nextLine();
 
@@ -143,7 +153,7 @@ public class ProdutoMenu {
 
                     }else {
 
-                        fluxoMenus.cadastrarProduto();
+                        fluxoProdutos.cadastrarProduto();
                         return MenuAcao.CONTINUAR;
                     }
 
@@ -152,7 +162,7 @@ public class ProdutoMenu {
                     if (!authService.validarPermissao() &&
                             !Sessao.getUserLogado().getCarrinho().getProdutos().isEmpty()) {
 
-                        fluxoMenus.finalizarVenda();
+                        fluxoVenda.finalizarVenda();
                         return MenuAcao.CONTINUAR;
 
                     }else if (!authService.validarPermissao()){
@@ -248,7 +258,7 @@ public class ProdutoMenu {
                         System.out.println("Informe o ID do produto que deseja fazer a alteração:");
                         String idAlt = scanner.nextLine();
 
-                        Categoria categoria = fluxoMenus.solicitarCategoria();
+                        Categoria categoria = fluxoProdutos.solicitarCategoria();
 
 
                         produtoService.alterarCategoria(UUID.fromString(idAlt), categoria );

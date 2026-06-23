@@ -1,5 +1,7 @@
 package projeto.Menu;
 
+import projeto.Menu.Fluxos.FluxoMenus;
+import projeto.Menu.Fluxos.FluxoUsuario;
 import projeto.auth.AuthService;
 import projeto.auth.Sessao;
 import projeto.entidades.Cargo;
@@ -15,22 +17,22 @@ import java.util.UUID;
 
 public class UsuarioMenu {
 
-    private FluxoMenus fluxoMenus;
+    private FluxoUsuario fluxoUsuario;
     private UsuarioService usuarioService;
     private VendaService vendaService;
     private AuthService authService;
     private Printer printer;
     private Scanner scanner;
 
-    public UsuarioMenu(FluxoMenus fluxoMenus, UsuarioService usuarioService, VendaService vendaService, AuthService authService, Printer printer, Scanner scanner) {
-        if (fluxoMenus == null)throw new NegocioException("Fluxo menu inválido");
+    public UsuarioMenu(FluxoUsuario fluxoUsuario, UsuarioService usuarioService, VendaService vendaService, AuthService authService, Printer printer, Scanner scanner) {
+        if (fluxoUsuario == null)throw new NegocioException("Fluxo menu inválido");
         if (usuarioService == null)throw new NegocioException("Usuario Service inválido");
         if (vendaService == null)throw new NegocioException("Venda Service inválido");
         if (authService == null)throw new NegocioException("Auth Service inválido");
         if (printer == null)throw new NegocioException("Printer inválido");
         if (scanner == null)throw new NegocioException("Scarnner inválido");
 
-        this.fluxoMenus = fluxoMenus;
+        this.fluxoUsuario = fluxoUsuario;
         this.usuarioService = usuarioService;
         this.vendaService = vendaService;
         this.authService = authService;
@@ -82,7 +84,7 @@ public class UsuarioMenu {
                     return MenuAcao.CONTINUAR;
                 } else {
 
-                    fluxoMenus.cadastrarUsuario();
+                    fluxoUsuario.cadastrarUsuario();
                     System.out.println("--------------------");
                     return MenuAcao.CONTINUAR;
 
